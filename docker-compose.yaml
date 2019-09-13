@@ -20,7 +20,7 @@ services:
     volumes:
       - ./config:/deployments/config
     ports:
-      - "8900:8080"
+      - "7531:8080"
     environment:
       SPRING_PROFILES_ACTIVE: ${MR_SPRING_PROFILES_ACTIVE}
       SPRING_DATA_MONGODB_URI: ${MR_SPRING_DATA_MONGODB_URI}
@@ -46,7 +46,7 @@ services:
     build: ./keycloak
     depends_on: [jboss-keycloak-mysql]
     ports:
-      - '8090:8080'
+      - '7530:8080'
     volumes:
       - ./config/keycloak:/microcks-keycloak-config
     environment:
@@ -73,7 +73,7 @@ services:
     image: 'apicurio/apicurio-studio-ws:${APICURIO_WS_VERSION}'
     depends_on: [apicurio-studio-db]
     ports:
-      - '8092:8080'
+      - '7529:8080'
     environment:
       JAVA_TOOL_OPTIONS: '-Djava.net.preferIPv4Stack=true'
       APICURIO_DB_TYPE: ${APICURIO_DB_TYPE}
@@ -89,7 +89,7 @@ services:
     image: 'apicurio/apicurio-studio-api:${APICURIO_API_VERSION}'
     depends_on: [apicurio-studio-db, apicurio-studio-ws]
     ports:
-      - '8091:8080'
+      - '7528:8080'
     environment:
       JAVA_TOOL_OPTIONS: '-Djava.net.preferIPv4Stack=true'
       APICURIO_KC_AUTH_URL: ${APICURIO_KC_AUTH_URL}
@@ -113,7 +113,7 @@ services:
     image: 'apicurio/apicurio-studio-ui:${APICURIO_UI_VERSION}'
     depends_on: [apicurio-studio-db, apicurio-studio-api, apicurio-studio-ws]
     ports:
-      - '8093:8080'
+      - '7527:8080'
     environment:
       JAVA_TOOL_OPTIONS: '-Djava.net.preferIPv4Stack=true'
       APICURIO_KC_AUTH_URL: ${APICURIO_KC_AUTH_URL}
