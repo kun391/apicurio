@@ -542,14 +542,14 @@
     {
       "id": "27bc63fd-1780-4acd-992a-48c2ef2f429f",
       "clientId": "microcks-app-js",
-      "rootUrl": "http://$HOST:8900",
-      "baseUrl": "http://$HOST:8900",
+      "rootUrl": "http://$HOST:7531",
+      "baseUrl": "http://$HOST:7531",
       "surrogateAuthRequired": false,
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "http://$HOST:8900/*"
+        "http://$HOST:7531/*"
       ],
       "webOrigins": [
         "+"
