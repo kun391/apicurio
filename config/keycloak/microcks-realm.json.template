@@ -542,14 +542,14 @@
     {
       "id": "27bc63fd-1780-4acd-992a-48c2ef2f429f",
       "clientId": "microcks-app-js",
-      "rootUrl": "http://$HOST:7531",
-      "baseUrl": "http://$HOST:7531",
+      "rootUrl": "https://microcks.greenglobal.vn",
+      "baseUrl": "https://microcks.greenglobal.vn",
       "surrogateAuthRequired": false,
       "enabled": true,
       "clientAuthenticatorType": "client-secret",
       "secret": "**********",
       "redirectUris": [
-        "http://$HOST:7531/*"
+        "https://microcks.greenglobal.vn/*"
       ],
       "webOrigins": [
         "+"

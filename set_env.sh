@@ -1,19 +1,5 @@
 #!/bin/bash
 
-if [ -z "$1" ] || [ -z "$2" ]
-then
-  echo "Please provide the neccessary arguments!"
-  exit 1
-fi
-
-if [ "$2" != "mysql" ] && [ "$2" != "postgresql" ]
-then
-  echo "DB type must be mysql or postgresql"
-  exit
-fi
-
-HOST_IP=$1
-DB_TYPE=$2
 P=$(pwd)
 
 KC_ROOT_DB_PASSWORD=$(< /dev/urandom LC_CTYPE=C tr -dc _A-Z-a-z-0-9 | head -c6)
@@ -24,7 +10,7 @@ AS_DB_PASSWORD=$(< /dev/urandom LC_CTYPE=C tr -dc _A-Z-a-z-0-9 | head -c6)
 
 SERVICE_CLIENT_SECRET=$(< /dev/urandom LC_CTYPE=C tr -dc _A-Z-a-z-0-9 | head -c64)
 
-sed 's/$HOST/'"$HOST_IP"'/g' $P/.env.template > $P/tmp; mv $P/tmp $P/.env
+cp $P/.env.template .env
 
 sed 's/$KC_ROOT_DB_PASSWORD/'"$KC_ROOT_DB_PASSWORD"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
 sed 's/$KC_DB_PASSWORD/'"$KC_DB_PASSWORD"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
@@ -39,15 +25,12 @@ sed 's/$DB_CONN_URL/'"jdbc:postgresql:\\/\\/apicurio-studio-db\\/apicuriodb"'/g'
 
 
 
-sed 's/$HOST/'"$HOST_IP"'/g' $P/config/keycloak/apicurio-realm.json.template > $P/config/keycloak/apicurio-realm.json
-sed 's/$HOST/'"$HOST_IP"'/g' $P/config/keycloak/microcks-realm.json.template > $P/config/keycloak/microcks-realm.json.tmp
+cp $P/config/keycloak/apicurio-realm.json.template $P/config/keycloak/apicurio-realm.json
+cp $P/config/keycloak/microcks-realm.json.template $P/config/keycloak/microcks-realm.json.tmp
 sed 's/$SERVICE_CLIENT_SECRET/'"$SERVICE_CLIENT_SECRET"'/g' $P/config/keycloak/microcks-realm.json.tmp > $P/config/keycloak/microcks-realm.json
 
 rm -rf $P/config/keycloak/microcks-realm.json.tmp
 
 echo "Keycloak username: admin"
 echo "Keycloak password: $KC_PASSWORD"
-echo ""
-echo "Keycloak URL: $HOST_IP:8090"
-echo "Apicurio URL: $HOST_IP:8093"
-echo "Microcks URL: $HOST_IP:8900"
+echo "SUCCESS"
