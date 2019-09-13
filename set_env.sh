@@ -28,7 +28,7 @@ KC_PASSWORD=$(< /dev/urandom LC_CTYPE=C tr -dc _A-Z-a-z-0-9 | head -c6)
 AS_MYSQL_ROOT_PASSWORD=$(< /dev/urandom LC_CTYPE=C tr -dc _A-Z-a-z-0-9 | head -c6)
 AS_DB_PASSWORD=$(< /dev/urandom LC_CTYPE=C tr -dc _A-Z-a-z-0-9 | head -c6)
 
-SERVICE_CLIENT_SECRET=$(uuidgen)
+SERVICE_CLIENT_SECRET=$(< /dev/urandom LC_CTYPE=C tr -dc _A-Z-a-z-0-9 | head -c64)
 
 sed 's/$HOST/'"$HOST_IP"'/g' $P/.env.template > $P/tmp; mv $P/tmp $P/.env
 

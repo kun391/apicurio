@@ -1,17 +1,16 @@
 version: '3'
 services:
-
   mongo:
     image: mongo:3.3.12
     container_name: microcks-mongo
-    volumes:
-      - "mongo_data2:/data/db"
 
   postman:
     image: microcks/microcks-postman-runtime:latest
     container_name: microcks-postman-runtime
 
   microcks:
+    env_file:
+      - .env
     depends_on:
       - mongo
       - postman
@@ -29,17 +28,20 @@ services:
       POSTMAN_RUNNER_URL: ${MR_POSTMAN_RUNNER_URL}
       TEST_CALLBACK_URL: ${MR_TEST_CALLBACK_URL}
       KEYCLOAK_URL: ${MR_KEYCLOAK_URL}
+
   jboss-keycloak-mysql:
-    image: 'percona:5.7'
+    env_file:
+      - .env
+    image: mariadb
     environment:
       MYSQL_DATABASE: ${KC_MYSQL_DATABASE}
       MYSQL_ROOT_PASSWORD: ${KC_MYSQL_ROOT_PASSWORD}
       MYSQL_USER: ${KC_MYSQL_USER}
       MYSQL_PASSWORD: ${KC_MYSQL_PASSWORD}
-    volumes:
-      - 'mysql2:/var/lib/mysql'
 
   jboss-keycloak:
+    env_file:
+      - .env
     image: 'as-keycloak'
     build: ./keycloak
     depends_on: [jboss-keycloak-mysql]
@@ -51,27 +53,29 @@ services:
       KEYCLOAK_USER: ${KEYCLOAK_USER}
       KEYCLOAK_PASSWORD: ${KEYCLOAK_PASSWORD}
       KEYCLOAK_IMPORT: /microcks-keycloak-config/apicurio-realm.json,/microcks-keycloak-config/microcks-realm.json
-
       DB_VENDOR: ${DB_VENDOR}
       DB_ADDR: ${DB_ADDR}
       DB_USER: ${DB_USER}
       DB_PASSWORD: ${DB_PASSWORD}
+
   apicurio-studio-db:
+    env_file:
+      - .env
     image: 'postgres:9.6'
     environment:
       POSTGRES_DB: ${AS_DATABASE}
       POSTGRES_USER: ${AS_DB_USER}
       POSTGRES_PASSWORD: ${AS_DB_PASSWORD}
-    volumes:
-      - 'postgre_apicurio:/var/lib/postgresql/data'
+
   apicurio-studio-ws:
+    env_file:
+      - .env
     image: 'apicurio/apicurio-studio-ws:${APICURIO_WS_VERSION}'
     depends_on: [apicurio-studio-db]
     ports:
       - '8092:8080'
     environment:
       JAVA_TOOL_OPTIONS: '-Djava.net.preferIPv4Stack=true'
-
       APICURIO_DB_TYPE: ${APICURIO_DB_TYPE}
       APICURIO_DB_DRIVER_NAME: ${APICURIO_DB_DRIVER_NAME}
       APICURIO_DB_CONNECTION_URL: ${APICURIO_DB_CONNECTION_URL}
@@ -80,6 +84,8 @@ services:
       APICURIO_DB_INITIALIZE: ${WS_APICURIO_DB_INITIALIZE}
 
   apicurio-studio-api:
+    env_file:
+      - .env
     image: 'apicurio/apicurio-studio-api:${APICURIO_API_VERSION}'
     depends_on: [apicurio-studio-db, apicurio-studio-ws]
     ports:
@@ -102,23 +108,17 @@ services:
       APICURIO_SHARE_FOR_EVERYONE: ${APICURIO_SHARE_FOR_EVERYONE}
 
   apicurio-studio-ui:
+    env_file:
+      - .env
     image: 'apicurio/apicurio-studio-ui:${APICURIO_UI_VERSION}'
     depends_on: [apicurio-studio-db, apicurio-studio-api, apicurio-studio-ws]
     ports:
       - '8093:8080'
     environment:
       JAVA_TOOL_OPTIONS: '-Djava.net.preferIPv4Stack=true'
-
       APICURIO_KC_AUTH_URL: ${APICURIO_KC_AUTH_URL}
       APICURIO_UI_HUB_API_URL: ${APICURIO_UI_HUB_API_URL}
       APICURIO_UI_EDITING_URL: ${APICURIO_UI_EDITING_URL}
       APICURIO_UI_FEATURE_MICROCKS: ${APICURIO_UI_FEATURE_MICROCKS}
       APICURIO_UI_FEATURE_SHARE_WITH_EVERYONE: ${APICURIO_UI_FEATURE_SHARE_WITH_EVERYONE}
       APICURIO_UI_LOGOUT_REDIRECT_URI: /
-
-volumes:
-    mongo_data2: {}
-    mysql2:
-    postgre_apicurio:
-networks:
-  main:
