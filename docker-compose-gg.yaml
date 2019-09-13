@@ -2,7 +2,7 @@ version: '3'
 services:
   apicurio-studio-auth:
     ports:
-      - '7530:8080'
+      - '7530:8443'
     env_file:
       - .env
     image: apicurio/apicurio-studio-auth
@@ -26,7 +26,7 @@ services:
     image: 'apicurio/apicurio-studio-ws:${APICURIO_WS_VERSION}'
     depends_on: [apicurio-studio-db]
     ports:
-      - '7529:8080'
+      - '7529:8443'
     environment:
       APICURIO_PORT_OFFSET: ${APICURIO_PORT_OFFSET}
       APICURIO_DB_DRIVER_NAME: ${APICURIO_DB_DRIVER_NAME}
@@ -45,7 +45,7 @@ services:
     image: 'apicurio/apicurio-studio-api:${APICURIO_API_VERSION}'
     depends_on: [apicurio-studio-db, apicurio-studio-ws]
     ports:
-      - '7528:8080'
+      - '7528:8443'
     environment:
       APICURIO_KC_AUTH_URL: ${APICURIO_KC_AUTH_URL}
       APICURIO_KC_REALM: ${APICURIO_KC_REALM}
@@ -72,7 +72,7 @@ services:
     image: 'apicurio/apicurio-studio-ui:${APICURIO_UI_VERSION}'
     depends_on: [apicurio-studio-db, apicurio-studio-api, apicurio-studio-ws, apicurio-studio-auth]
     ports:
-      - '7527:8080'
+      - '7527:8443'
     environment:
       APICURIO_KC_AUTH_URL: ${APICURIO_KC_AUTH_URL}
       APICURIO_KC_REALM: ${APICURIO_KC_REALM}
