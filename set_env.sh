@@ -16,12 +16,6 @@ HOST_IP=$1
 DB_TYPE=$2
 P=$(pwd)
 
-##if the script runs in the container, we have to adjust the path to the mount point
-if [ $P == "/" ]
-then
-  export P=/apicurio
-fi
-
 KC_ROOT_DB_PASSWORD=$(< /dev/urandom LC_CTYPE=C tr -dc _A-Z-a-z-0-9 | head -c6)
 KC_DB_PASSWORD=$(< /dev/urandom LC_CTYPE=C tr -dc _A-Z-a-z-0-9 | head -c6)
 KC_PASSWORD=$(< /dev/urandom LC_CTYPE=C tr -dc _A-Z-a-z-0-9 | head -c6)
@@ -39,16 +33,9 @@ sed 's/$AS_MYSQL_ROOT_PASSWORD/'"$AS_MYSQL_ROOT_PASSWORD"'/g' $P/.env > $P/tmp; 
 sed 's/$AS_DB_PASSWORD/'"$AS_DB_PASSWORD"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
 sed 's/$SERVICE_CLIENT_SECRET/'"$SERVICE_CLIENT_SECRET"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
 
-if [ "$DB_TYPE" == "mysql" ]
-then
-  sed 's/$DB_TYPE/'"mysql5"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
-  sed 's/$DB_DRIVER/'"mysql"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
-  sed 's/$DB_CONN_URL/'"jdbc:mysql:\\/\\/apicurio-studio-db\\/apicuriodb"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
-else
-  sed 's/$DB_TYPE/'"postgresql9"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
-  sed 's/$DB_DRIVER/'"postgresql"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
-  sed 's/$DB_CONN_URL/'"jdbc:postgresql:\\/\\/apicurio-studio-db\\/apicuriodb"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
-fi
+sed 's/$DB_TYPE/'"postgresql9"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
+sed 's/$DB_DRIVER/'"postgresql"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
+sed 's/$DB_CONN_URL/'"jdbc:postgresql:\\/\\/apicurio-studio-db\\/apicuriodb"'/g' $P/.env > $P/tmp; mv $P/tmp $P/.env
 
 
 
